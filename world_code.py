@@ -1,4 +1,4 @@
-import constants as const
+import constants as cnst
 import random
 
 
@@ -7,17 +7,41 @@ class World:
 
         self.cells = []  # 921600
 
-        for pos in range(const.HEIGHT * const.WIDTH):
-            x = pos % const.HEIGHT
-            y = pos // const.HEIGHT
+        for pos in range(cnst.HEIGHT * cnst.WIDTH):
+            x = pos % cnst.HEIGHT
+            y = pos // cnst.HEIGHT
             self.cells.append(Cell(pos, x, y))
 
     def cell(self, x, y):
-        return self.cells[y * const.HEIGHT + x]
+        return self.cells[y * cnst.HEIGHT + x]
+
+    def cell_around(self, x, y, distance):
+        cells = []
+        start_x, end_x = x - distance, x + distance
+        start_y, end_y = y - distance, y + distance
+        if start_x < 0:
+            start_x = 0
+        if start_y < 0:
+            start_y = 0
+        if end_x > cnst.WIDTH - 1:
+            end_x = cnst.WIDTH - 1
+        if end_y > cnst.HEIGHT - 1:
+            end_y = cnst.HEIGHT - 1
+        for x_i in range(start_x, end_x + 1):
+            for y_i in range(start_y, end_y + 1):
+                if x == x_i and y == y_i:
+                    pass
+                elif distance > 1:
+                    cell = self.cell(x_i, y_i)
+                    if cell.object is not None:
+                        cells.append(cell)
+                else:
+                    cells.append(self.cell(x_i, y_i))
+        return cells
 
 
 class Cell:
-    def __init__(self, position, x, y, object=None, col=const.BLACK) -> None:
+    def __init__(self, position, x, y, object=None, col=cnst.BLACK) -> None:
         self.position = position
         self.x = x
         self.y = y
@@ -35,7 +59,7 @@ def random_point():
 world = World()
 
 # print(world.cells)
-# w = World(const.WIDTH * const.HEIGHT)        
+# w = World(const.WIDTH * const.HEIGHT)
 # print(w.cell(2, 3).object)
 
 # pos = 42

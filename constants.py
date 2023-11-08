@@ -14,8 +14,11 @@ BLUE = (0, 0, 255)
 
 DIRECTIONS = ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0))
 
+
+
+# print((4, 4) - DIRECTIONS[0])
 # for i in DIRECTIONS:
-#     print(type(i))
+#     print(type(i)) 
 # nums = [-9, -7]
 # random.shuffle(nums)
 # print(nums)

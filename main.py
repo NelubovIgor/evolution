@@ -1,14 +1,14 @@
 import pygame
 import agents_code
 import world_code
-import constants as const
+import constants as cnst
 import random
 import time
 
 # pygame setup 
 pygame.init()
 # дисплей
-screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
+screen = pygame.display.set_mode((cnst.WIDTH, cnst.HEIGHT))
 # время в игре
 clock = pygame.time.Clock()
 
@@ -20,7 +20,7 @@ agents_code.create_grass(1000)
 # agents_code.agents.append(agents_code.Agent(50, 40, const.BLUE))
 # agents_code.grass.append(agents_code.Grass(58, 40, const.GREEN))
 
-surf_agents = pygame.Surface((const.WIDTH * const.SIZE_CELL, const.HEIGHT * const.SIZE_CELL), flags=pygame.SRCALPHA)
+surf_agents = pygame.Surface((cnst.WIDTH * cnst.SIZE_CELL, cnst.HEIGHT * cnst.SIZE_CELL), flags=pygame.SRCALPHA)
 
 cycle = 0
 running = True
@@ -35,8 +35,8 @@ while running:
         a.vision()
         # print(a.cell.x, a.x)
 
-    screen.fill(const.BLACK)
-    surf_agents.fill(const.BLACK)
+    screen.fill(cnst.BLACK)
+    surf_agents.fill(cnst.BLACK)
 
     for a in agents_code.agents:
         a.draw(surf_agents)
@@ -48,8 +48,8 @@ while running:
 
     pygame.display.flip()
 
-    clock.tick(const.FPS)  # Лимит FPS
+    clock.tick(cnst.FPS)  # Лимит FPS
     cycle += 1
     # time.sleep(0.2)
-    
+
 pygame.quit()
