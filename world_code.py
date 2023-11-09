@@ -39,6 +39,13 @@ class World:
                     cells.append(self.cell(x_i, y_i))
         return cells
 
+    def cell_to_cell(self, obj1, obj2):
+        x = obj1.x - obj2.x
+        y = obj1.y - obj2.y
+        dir_x = -int(x / abs(x)) if x != 0 else 0
+        dir_y = -int(y / abs(y)) if y != 0 else 0
+        return cnst.DIRECTIONS.index((dir_x, dir_y))
+
 
 class Cell:
     def __init__(self, position, x, y, object=None, col=cnst.BLACK) -> None:

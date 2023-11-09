@@ -17,9 +17,6 @@ world_code.world
 agents_code.create_agent(10)
 agents_code.create_grass(1000)
 
-# agents_code.agents.append(agents_code.Agent(50, 40, const.BLUE))
-# agents_code.grass.append(agents_code.Grass(58, 40, const.GREEN))
-
 surf_agents = pygame.Surface((cnst.WIDTH * cnst.SIZE_CELL, cnst.HEIGHT * cnst.SIZE_CELL), flags=pygame.SRCALPHA)
 
 cycle = 0
@@ -32,8 +29,7 @@ while running:
 
     random.shuffle(agents_code.agents)
     for a in agents_code.agents:
-        a.vision()
-        # print(a.cell.x, a.x)
+        a.do()
 
     screen.fill(cnst.BLACK)
     surf_agents.fill(cnst.BLACK)

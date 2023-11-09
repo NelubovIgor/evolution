@@ -27,7 +27,7 @@ class Agent(Objects):
         self.energy = energy
         self.speed = 2
         self.points_evol = 10
-        self.vision_area = 2
+        self.vision_area = 40
 
     def do(self):
         food, cell, path = self.touch()
@@ -37,7 +37,8 @@ class Agent(Objects):
         elif self.energy > 200:
             self.reproduction()
         elif path:
-            self.vision(path)
+            see_food, see_cell = self.vision()
+            self.move_to(path, see_food)
 
     def touch(self):
         cells = world_code.world.cell_around(self.x, self.y, 1)
@@ -47,7 +48,7 @@ class Agent(Objects):
         # feel_enemy = [c for c in cells if c.col == cnst.RED]
         return feel_food, feel_cell, clear_path
 
-    def vision(self, path):
+    def vision(self):
         cells = world_code.world.cell_around(self.x, self.y, self.vision_area)
         see_food = {}
         see_cell = {}
@@ -55,79 +56,34 @@ class Agent(Objects):
         for c in cells:
             dx = c.x - self.x
             dy = c.y - self.y
-            print(path) # написать код для определения доступности направления к объекту
-            print(dx, dy)
             distance = math.sqrt(dx ** 2 + dy ** 2)
             if c.col == cnst.GREEN:
-                see_food[distance * -1] = c
+                see_food[distance] = c
             elif c.col == cnst.BLUE:
-                see_cell[distance * -1] = c
+                see_cell[distance] = c
+        return see_food, see_cell
 
-    def move_to(self, targets):
-        res = list(targets.values())[0]
-        # print(res.x, res.y, self.x, self.y)
-        deadlock = set()
-        for k, v in targets.items():
-            if len(deadlock) == 8:
-                break
-            x = self.x - v.x
-            y = self.y - v.y
-            dir_x = -int(x / abs(x)) if x != 0 else 0
-            dir_y = -int(y / abs(y)) if y != 0 else 0
-            direction = [(dir_x, dir_y)]
-            # print(direction, k)
-            if direction[0] in deadlock:
-                continue
-            index = cnst.DIRECTIONS.index(direction[0])
-            if index == 0: index = 8
-            bypass = [-7, -9]
+    def move_to(self, path, targets):
+        open_path = [world_code.world.cell_to_cell(self, p) for p in path]
+        to = ''
+        for k, v in sorted(targets.items()):
+            ind_dir = world_code.world.cell_to_cell(self, v)
+            bypass = [-1, 1]
             random.shuffle(bypass)
-            direction.extend((cnst.DIRECTIONS[index + b] for b in bypass))
-            deadlock.update(direction)
-            for d in direction:
-                cell = world_code.world.cell(self.x + d[0],self.y + d[1])
-                # print(cell.object)
-                # print(cell.x, cell.y)
-                if cell.col == cnst.GREEN:
-                    print('eat')
-                    self.eat(cell)
-                    break
-                elif cell.object is None:
-                    self.move(d)
-                    break
-
-    # def move_to(self, targets):
-    #     res = list(targets.values())[0]
-    #     # print(res.x, res.y, self.x, self.y)
-    #     deadlock = set()
-    #     for k, v in targets.items():
-    #         if len(deadlock) == 8:
-    #             break
-    #         x = self.x - v.x
-    #         y = self.y - v.y
-    #         dir_x = -int(x / abs(x)) if x != 0 else 0
-    #         dir_y = -int(y / abs(y)) if y != 0 else 0
-    #         direction = [(dir_x, dir_y)]
-    #         # print(direction, k)
-    #         if direction[0] in deadlock:
-    #             continue
-    #         index = cnst.DIRECTIONS.index(direction[0])
-    #         if index == 0: index = 8
-    #         bypass = [-7, -9]
-    #         random.shuffle(bypass)
-    #         direction.extend((cnst.DIRECTIONS[index + b] for b in bypass))
-    #         deadlock.update(direction)
-    #         for d in direction:
-    #             cell = world_code.world.cell(self.x + d[0],self.y + d[1])
-    #             # print(cell.object)
-    #             # print(cell.x, cell.y)
-    #             if cell.col == cnst.GREEN:
-    #                 print('eat')
-    #                 self.eat(cell)
-    #                 break
-    #             elif cell.object is None:
-    #                 self.move(d)
-    #                 break
+            if ind_dir in open_path:
+                to = ind_dir
+                break
+            elif ind_dir + bypass[0] in open_path:
+                to = ind_dir + bypass[0]
+                break
+            elif ind_dir + bypass[1] in open_path:
+                to = ind_dir + bypass[1]
+                break
+        if isinstance(to, int):
+            self.move(cnst.DIRECTIONS[to])
+        else:
+            random.shuffle(open_path)
+            self.move(cnst.DIRECTIONS[open_path[0]])
 
     def escape(self):
         return
@@ -141,7 +97,7 @@ class Agent(Objects):
         self.cell.col = self.color
         self.cell.object = self
         self.rect = pygame.Rect(self.x, self.y, cnst.SIZE_CELL, cnst.SIZE_CELL)
-        self.energy -= self.speed / 10
+        self.energy -= 1
 
     def eat(self, cell):
         grass.remove(cell.object)
@@ -187,60 +143,24 @@ def create_grass(count):
         grass.append(Grass(x, y, cnst.GREEN))
 
 
-world_code.world
+def test(iteration):
+    world_code.world
 
+    agents.append(Agent(0, 0))
+    agents.append(Agent(1, 0))
+    grass.append(Grass(0, 2))
+    grass.append(Grass(2, 2))
 
-agents.append(Agent(0, 0))
-agents.append(Agent(1, 0))
-grass.append(Grass(0, 2))
+    a1 = agents[0]
+    a2 = agents[1]
 
+    # g1 = grass[0]
+    # print(grass)
+    # print(g1.cell.object)
+    for _ in range(iteration):
+        a1.do()
+        print(a1.x, a1.y)
+        print(a1.energy)
 
-a1 = agents[0]
-a2 = agents[1]
+# test(0)
 
-# g1 = grass[0]
-# print(grass)
-# print(g1.cell.object)
-a1.do()
-print('do')
-# print(grass[0])
-print(a1.energy)
-
-# cycle = 0
-# while cycle < 11:
-#     agents[0].vision()
-#     cycle += 1
-
-# create_grass(1)
-# print(grass[0].cell.col)
-# a = Agent(2, 3, const.BLUE)
-# print(a)
-
-
-
-
-
-# def vision(self):
-#     self.what_see = {}
-#     start_x, end_x = self.x - self.vision_area, self.x + self.vision_area
-#     start_y, end_y = self.y - self.vision_area, self.y + self.vision_area
-#     if start_x < 0: start_x = 0
-#     if start_y < 0: start_y = 0
-#     if end_x > const.WIDTH - 1: end_x = const.WIDTH - 1
-#     if end_y > const.HEIGHT - 1: end_y = const.HEIGHT - 1
-#     for x in range(start_x, end_x + 1):
-#         for y in range(start_y, end_y + 1):
-#             if x == self.x and y == self.y:
-#                 continue
-#             cell_chek = world_code.world.cell(x, y)
-#             if cell_chek.object:
-#                 dx = x - self.x
-#                 dy = y - self.y
-#                 distance = math.sqrt(dx ** 2 + dy ** 2)
-#                 self.what_see[distance * -1] = cell_chek
-#     food = dict()
-#     for k, v in self.what_see.items():
-#         if v.col == const.GREEN:
-#             food[k] = v
-#     if food:
-#         self.move_to(dict(sorted(food.items(), reverse=True)))
