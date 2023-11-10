@@ -3,9 +3,9 @@ import agents_code
 import world_code
 import constants as cnst
 import random
-import time
+import pg_textblocks
 
-# pygame setup 
+# pygame setup
 pygame.init()
 # дисплей
 screen = pygame.display.set_mode((cnst.WIDTH, cnst.HEIGHT))
@@ -47,13 +47,16 @@ while running:
         g.draw(surf_agents)
 
     screen.blit(surf_agents, (0, 0))
+    text_1 = ['fps: {}'.format(round(clock.get_fps(), 1)),
+              'bots: {}'.format(len(agents_code.agents)),
+              'trees {}'.format(len(agents_code.grass))]
 
+    pg_textblocks.display_text(screen, text_1, 5, 5)
     pygame.display.flip()
 
     clock.tick(cnst.FPS)  # Лимит FPS
     cycle += 1
     # time.sleep(0.2)
-    if cycle % 100 == 0:
-        print(len(agents_code.agents), '- agents')
-        print(len(agents_code.grass), '- grass')
+
+
 pygame.quit()

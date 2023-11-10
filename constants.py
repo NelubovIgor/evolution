@@ -4,13 +4,14 @@ import random
 WIDTH = 200
 HEIGHT = 200
 SIZE_CELL = 2
-FPS = 30
+FPS = 60
 # цвeта
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+GRAY_DARK = [20, 20, 20]
 
 DIRECTIONS = ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (-1, 0))
 

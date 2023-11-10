@@ -44,7 +44,7 @@ class Agent(Objects):
 
     def touch(self):
         cells = world_code.world.cell_around(self.x, self.y, 1)
-        feel_food = (c for c in cells if c.col == cnst.GREEN)
+        feel_food = [c for c in cells if c.col == cnst.GREEN]
         feel_cell = [c for c in cells if c.col == cnst.BLUE]
         clear_path = [c for c in cells if c.object is None]
         # feel_enemy = [c for c in cells if c.col == cnst.RED]
