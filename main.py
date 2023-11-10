@@ -13,19 +13,25 @@ screen = pygame.display.set_mode((cnst.WIDTH, cnst.HEIGHT))
 clock = pygame.time.Clock()
 
 world_code.world
-
+cycle = 0
 agents_code.create_agent(10)
-agents_code.create_grass(1000)
+agents_code.create_grass(100, cycle)
 
 surf_agents = pygame.Surface((cnst.WIDTH * cnst.SIZE_CELL, cnst.HEIGHT * cnst.SIZE_CELL), flags=pygame.SRCALPHA)
 
-cycle = 0
+
 running = True
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    if cycle % 50 == 0:
+        agents_code.create_grass(100, cycle)
+        random.shuffle(agents_code.grass)
+        for g in agents_code.grass:
+            g.age(cycle)
 
     random.shuffle(agents_code.agents)
     for a in agents_code.agents:
@@ -47,5 +53,7 @@ while running:
     clock.tick(cnst.FPS)  # Лимит FPS
     cycle += 1
     # time.sleep(0.2)
-
+    if cycle % 100 == 0:
+        print(len(agents_code.agents), '- agents')
+        print(len(agents_code.grass), '- grass')
 pygame.quit()

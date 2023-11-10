@@ -1,6 +1,8 @@
+import random
+
 # размеры
-WIDTH = 900
-HEIGHT = 900
+WIDTH = 200
+HEIGHT = 200
 SIZE_CELL = 2
 FPS = 30
 # цвeта
@@ -12,7 +14,12 @@ BLUE = (0, 0, 255)
 
 DIRECTIONS = ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (-1, 0))
 
+# near_cell = [DIRECTIONS[0]]
+# random.shuffle(near_cell)
+# x, y = near_cell[0]
 
+# print(x, y)
+# print(type(False))
 
 # print((4, 4) - DIRECTIONS[0])
 # for i in DIRECTIONS:

@@ -31,10 +31,10 @@ class World:
             for y_i in range(start_y, end_y + 1):
                 if x == x_i and y == y_i:
                     pass
-                elif distance > 1:
-                    cell = self.cell(x_i, y_i)
-                    if cell.object is not None:
-                        cells.append(cell)
+                # elif distance > 1:
+                #     cell = self.cell(x_i, y_i)
+                #     if cell.object is not None:
+                #         cells.append(cell)
                 else:
                     cells.append(self.cell(x_i, y_i))
         return cells

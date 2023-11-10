@@ -22,14 +22,15 @@ class Objects:
 
 
 class Agent(Objects):
-    def __init__(self, x, y, color=cnst.BLUE, energy=150) -> None:
+    def __init__(self, x, y, color=cnst.BLUE, energy=50) -> None:
         super().__init__(x, y, color)
         self.energy = energy
-        self.speed = 2
         self.points_evol = 10
         self.vision_area = 40
 
     def do(self):
+        self.energy -= 0.1
+        self.age()
         food, cell, path = self.touch()
         if self.energy < 200 and food:
             random.shuffle(food)
@@ -38,11 +39,12 @@ class Agent(Objects):
             self.reproduction()
         elif path:
             see_food, see_cell = self.vision()
-            self.move_to(path, see_food)
+            if self.energy > 20:
+                self.move_to(path, see_food)
 
     def touch(self):
         cells = world_code.world.cell_around(self.x, self.y, 1)
-        feel_food = [c for c in cells if c.col == cnst.GREEN]
+        feel_food = (c for c in cells if c.col == cnst.GREEN)
         feel_cell = [c for c in cells if c.col == cnst.BLUE]
         clear_path = [c for c in cells if c.object is None]
         # feel_enemy = [c for c in cells if c.col == cnst.RED]
@@ -106,25 +108,46 @@ class Agent(Objects):
         self.energy += 15
 
     def age(self):
-        age_now = time.time() - self.birth
-        if age_now > 5 and self.speed == 1:
-            self.speed += 1
-        elif age_now > 10 and self.speed == 2:
-            self.speed += 1
-        elif age_now > 15:
-            self.kill()
+        if self.energy <= 0:
+            self.cell.object = None
+            self.cell.col = cnst.BLACK
             agents.remove(self)
 
     def reproduction(self):
-        if self.energy > 100:
+        near_cell = world_code.world.cell_around(self.x, self.y, 1)
+        clear_path = [c for c in near_cell if c.object is None]
+        if self.energy > 100 and clear_path:
             self.energy -= 50
-            agents.append(Agent(self.rect.center))
+            random.shuffle(clear_path)
+            x, y = clear_path[0].x,  clear_path[0].y
+            agents.append(Agent(x, y))
 
 
 class Grass(Objects):
-    def __init__(self, x, y, color=cnst.GREEN) -> None:
+    def __init__(self, x, y, birth_cycle, color=cnst.GREEN) -> None:
         color = cnst.GREEN
         super().__init__(x, y, color)
+        self.birth_cycle = birth_cycle
+
+    def age(self, cycle):
+        age = cycle - self.birth_cycle
+        if age >= 2:
+            res = self.reproduction(cycle)
+            if res:
+                self.birth_cycle = cycle
+
+    def reproduction(self, cycle):
+        near_cell = world_code.world.cell_around(self.x, self.y, 3)
+        # print(near_cell)
+        clear_path = [c for c in near_cell if c.object is None]
+        # print(clear_path)
+        if clear_path:
+            random.shuffle(clear_path)
+            x, y = clear_path[0].x,  clear_path[0].y
+            grass.append(Grass(x, y, cycle))
+            return True
+        else:
+            return False
 
 
 grass = []
@@ -134,13 +157,13 @@ agents = []
 def create_agent(count):
     for _ in range(count):
         x, y = world_code.random_point()
-        agents.append(Agent(x, y, cnst.BLUE))
+        agents.append(Agent(x, y))
 
 
-def create_grass(count):
+def create_grass(count, cycle):
     for _ in range(count):
         x, y = world_code.random_point()
-        grass.append(Grass(x, y, cnst.GREEN))
+        grass.append(Grass(x, y, cycle))
 
 
 def test(iteration):
