@@ -4,7 +4,7 @@ import random
 WIDTH = 200
 HEIGHT = 200
 SIZE_CELL = 2
-FPS = 60
+FPS = 30
 # цвeта
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)

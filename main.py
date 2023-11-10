@@ -4,6 +4,7 @@ import world_code
 import constants as cnst
 import random
 import pg_textblocks
+import time
 
 # pygame setup
 pygame.init()
@@ -20,7 +21,7 @@ agents_code.create_grass(100, cycle)
 surf_agents = pygame.Surface((cnst.WIDTH * cnst.SIZE_CELL, cnst.HEIGHT * cnst.SIZE_CELL), flags=pygame.SRCALPHA)
 
 
-running = True
+running = False
 
 while running:
     for event in pygame.event.get():
@@ -60,3 +61,34 @@ while running:
 
 
 pygame.quit()
+
+
+def time_check():
+    return
+
+
+def test_without_animation():
+    global cycle
+    while True:
+        point = cycle % 30 == 0
+        if point:
+            start = time.time()
+        if cycle % 50 == 0:
+            agents_code.create_grass(100, cycle)
+            random.shuffle(agents_code.grass)
+            for g in agents_code.grass:
+                g.age(cycle)
+
+        random.shuffle(agents_code.agents)
+        for a in agents_code.agents:
+            a.do()
+        if point:
+            end = time.time()
+            speed = round(end - start, 3)
+            print(f'скорость кода: {speed}, цикл: {cycle}')
+        if cycle == 300:
+            break
+        cycle += 1
+
+
+# test_without_animation()
