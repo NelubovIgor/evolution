@@ -21,7 +21,7 @@ agents_code.create_grass(100, cycle)
 surf_agents = pygame.Surface((cnst.WIDTH * cnst.SIZE_CELL, cnst.HEIGHT * cnst.SIZE_CELL), flags=pygame.SRCALPHA)
 
 
-running = False
+running = True
 
 while running:
     for event in pygame.event.get():
@@ -30,9 +30,9 @@ while running:
 
     if cycle % 50 == 0:
         agents_code.create_grass(100, cycle)
-        random.shuffle(agents_code.grass)
-        for g in agents_code.grass:
-            g.age(cycle)
+        # random.shuffle(agents_code.grass)
+        # for g in agents_code.grass:
+        #     g.age(cycle)
 
     random.shuffle(agents_code.agents)
     for a in agents_code.agents:
