@@ -2,4 +2,4 @@
 My first genetic algoritnm project
 work!
 
-Just run 'main'
+Just run 'main.py' in interpreter 
